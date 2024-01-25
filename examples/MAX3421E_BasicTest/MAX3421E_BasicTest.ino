@@ -1,27 +1,26 @@
 
 #include <SPI.h>
-#include <usbhub.h>
-#include <Max3421e.h>
+#include <Usb.h>
 
-// Initialize USB Hub
 USB Usb;
+MAX3421E Max;
 
 void setup() {
-  Serial.begin(115200);
-  while (!Serial); // Wait for serial port to connect
-  Serial.println("Initializing USB Host Shield...");
-  if (Usb.Init() == -1) {
-    Serial.println("OSC did not start.");
-  }
-  delay(200);
+    Serial.begin(115200);
+    Serial.println("Start");
+
+    if (Usb.Init() == -1) {
+        Serial.println("OSC failed to start.");
+        while(1); //halt
+    } else {
+        Serial.println("USB host shield initialized.");
+    }
 }
 
 void loop() {
-  Usb.Task();
-  if (Usb.getUsbTaskState() == USB_STATE_RUNNING) {
-    Serial.println("USB device detected!");
-  } else {
-    Serial.println("No USB device detected.");
-  }
-  delay(1000); // Check every second
+    Max.gpioWr(LOW);
+    delay(500);
+    Max.gpioWr(HIGH);
+    delay(500);
+    Serial.println("LED test");
 }
